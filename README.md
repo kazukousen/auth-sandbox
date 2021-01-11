@@ -1,7 +1,7 @@
 
 ```shell script
-make build.docker
-docker-compose up
+make build.docker name=wasm-ext-opa
+make run name=wasm-ext-opa
 ```
 
 ```shell script
