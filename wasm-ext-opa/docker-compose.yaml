@@ -1,0 +1,32 @@
+version: '3'
+services:
+  opa:
+    image: openpolicyagent/opa:latest
+    ports:
+      - "8181:8181"
+    working_dir: /tmp/opa
+    volumes:
+      - ./policy/:/tmp/opa/policy
+    command:
+      - run
+      - --server
+      - --log-level=debug
+      - ./policy/
+  envoy:
+    image: istio/proxyv2:1.8.1
+    ports:
+      - "18000:18000"
+    entrypoint: /usr/local/bin/envoy
+    working_dir: /tmp/envoy
+    volumes:
+      - ./envoy.yaml:/tmp/envoy/envoy.yaml
+      - ./main.go.wasm:/tmp/envoy/main.go.wasm
+    command:
+      - -c
+      - /tmp/envoy/envoy.yaml
+      - --concurrency
+      - '2'
+      - --log-format-prefix-with-location
+      - '0'
+      - --log-format
+      - '%v'
